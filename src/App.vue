@@ -108,7 +108,6 @@ function updateDarkThemeStyles() {
   } else {
     root.classList.remove('dark');
   }
-  console.log(theme.useToken().token.value.colorBorder);
 }
 
 function toggleCollapsed() {
@@ -139,9 +138,9 @@ function updateNarrowState() {
   }
 }
 
-onresize = () => {
+addEventListener('resize', () => {
   updateNarrowState();
-};
+});
 
 onMounted(() => {
   updateNarrowState();
@@ -198,7 +197,7 @@ onMounted(() => {
 
       <a-layout-content class="app-scrollbar">
         <div class="app-content">
-          <router-view/>
+          <router-view />
         </div>
 
         <div class="app-footer">
@@ -214,7 +213,7 @@ onMounted(() => {
 
 <style lang="scss">
 html {
-  --app-content-margin: 8px;
+  --app-content-margin: 16px;
   --app-header-height: 80px;
   --app-footer-height: 80px;
 
