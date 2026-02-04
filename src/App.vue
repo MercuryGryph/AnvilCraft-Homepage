@@ -98,6 +98,9 @@ function toggleDarkTheme(dark?: boolean) {
   } else {
     state.darkTheme = dark;
   }
+
+  localStorage.setItem('darkTheme', state.darkTheme ? 'true' : 'false');
+
   updateDarkThemeStyles();
 }
 
@@ -111,8 +114,15 @@ function updateDarkThemeStyles() {
 }
 
 function initDarkTheme() {
-  const isSysDark = matchMedia('(prefers-color-scheme: dark)').matches;
-  toggleDarkTheme(isSysDark);
+  const isStoredDark = localStorage.getItem('darkTheme');
+  let isDark: boolean;
+  if (isStoredDark === null) {
+    isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+    localStorage.setItem('darkTheme', isDark ? 'true' : 'false');
+  } else {
+    isDark = isStoredDark == 'true';
+  }
+  toggleDarkTheme(isDark);
 }
 
 function toggleCollapsed() {
@@ -132,12 +142,12 @@ function select(page: any) {
 function updateNarrowState() {
   const vw = window.visualViewport?.width;
   if (!vw) return;
-  state.narrow = vw <= 600;
+  state.narrow = vw <= 650;
 
   state.collapsed = state.narrow;
   const root = document.documentElement;
   if (state.narrow) {
-    root.style.setProperty('--app-header-height', '120px');
+    root.style.setProperty('--app-header-height', '116px');
   } else {
     root.style.setProperty('--app-header-height', '80px');
   }
@@ -175,18 +185,45 @@ onMounted(() => {
               <icon-font class="icon" :type="'icon-' + url.icon" />
             </a>
           </a-tooltip>
+          <div />
+          <a-tooltip placement="left">
+            <template #title>
+              <span>
+                切换暗色模式
+                <br />
+                //todo: 改成 icon button
+              </span>
+            </template>
+            <a-switch v-model:checked="state.darkTheme" @click="toggleDarkTheme" />
+          </a-tooltip>
         </a-space>
       </template>
-      <a-space class="url-list" v-if="state.narrow">
-        <a-tooltip v-for="url in Urls" placement="left">
+      <div
+        v-if="state.narrow"
+        style="display: flex; align-items: center; justify-content: space-between"
+      >
+        <a-space class="url-list">
+          <a-tooltip v-for="url in Urls" placement="right">
+            <template #title>
+              <span>{{ url.tip }}</span>
+            </template>
+            <a :href="url.url" target="_blank">
+              <icon-font class="icon" :type="'icon-' + url.icon" />
+            </a>
+          </a-tooltip>
+        </a-space>
+
+        <a-tooltip placement="left">
           <template #title>
-            <span>{{ url.tip }}</span>
+            <span>
+              切换暗色模式
+              <br />
+              //todo: 改成 icon button
+            </span>
           </template>
-          <a :href="url.url" target="_blank">
-            <icon-font class="icon" :type="'icon-' + url.icon" />
-          </a>
+          <a-switch v-model:checked="state.darkTheme" @click="toggleDarkTheme" />
         </a-tooltip>
-      </a-space>
+      </div>
     </a-page-header>
 
     <a-layout class="app-layout">
