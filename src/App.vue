@@ -110,6 +110,11 @@ function updateDarkThemeStyles() {
   }
 }
 
+function initDarkTheme() {
+  const isSysDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  toggleDarkTheme(isSysDark);
+}
+
 function toggleCollapsed() {
   state.collapsed = !state.collapsed;
 }
@@ -144,7 +149,7 @@ addEventListener('resize', () => {
 
 onMounted(() => {
   updateNarrowState();
-  toggleDarkTheme(true);
+  initDarkTheme();
 });
 </script>
 
